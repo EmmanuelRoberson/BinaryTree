@@ -17,7 +17,7 @@ public:
 
 	TreeNode* find(int a_nValue);
 
-	void draw(aie::Renderer2D* renderer, TreeNode* selected = nullptr);
+	void draw(aie::Renderer2D* renderer, aie::Font* g_systemFont, TreeNode* selected = nullptr);
 
 private:
 
@@ -26,7 +26,7 @@ private:
 										TreeNode** ppOutParent);
 
 	void draw(aie::Renderer2D* renderer, TreeNode*, int x, int y,
-				int horizontalSpacing, TreeNode* selected = nullptr);
+				int horizontalSpacing, aie::Font* g_systemFont,TreeNode* selected = nullptr);
 
 	//The root node of the tree
 	TreeNode* m_pRoot;

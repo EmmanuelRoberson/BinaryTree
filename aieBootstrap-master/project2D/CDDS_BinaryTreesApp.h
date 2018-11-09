@@ -6,8 +6,6 @@ class CDDS_BinaryTreesApp : public aie::Application
 {
 protected:
 
-	aie::Font* g_systemFont = nullptr;
-
 	BinaryTree			m_binaryTree;
 	TreeNode*			m_selectedNode;
 

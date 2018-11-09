@@ -2,10 +2,12 @@
 #include "Input.h"
 #include "imgui.h"
 
+aie::Font* g_systemFont = nullptr;
+
 bool CDDS_BinaryTreesApp::startup()
 {
 	m_2dRenderer = new aie::Renderer2D();
-	g_systemFont = new aie::Font("./font/consolar.tff", 32);
+	g_systemFont = new aie::Font("./font/consolas.ttf", 32);
 	return true;
 }
 
@@ -48,7 +50,7 @@ void CDDS_BinaryTreesApp::draw()
 	m_2dRenderer->begin();
 
 	// draw your stuff here!
-	m_binaryTree.draw(m_2dRenderer, m_selectedNode);
+	m_binaryTree.draw(m_2dRenderer, g_systemFont, m_selectedNode);
 
 	//output some text
 	m_2dRenderer->drawText(g_systemFont, "Press ESC to quit", 0, 0);
