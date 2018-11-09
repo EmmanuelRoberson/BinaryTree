@@ -2,6 +2,8 @@
 #include <iostream>
 #include "Font.h"
 
+extern aie::Font* g_systemFont;
+
 TreeNode::TreeNode(int value)
 {
 	m_value = value;
@@ -9,8 +11,6 @@ TreeNode::TreeNode(int value)
 
 void TreeNode::draw(aie::Renderer2D* renderer, int x, int y, aie::Font* g_systemFont, bool selected = false)
 {
-
-	extern aie::Font* g_systemFont;
 
 	static char buffer[10];
 
