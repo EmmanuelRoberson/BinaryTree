@@ -18,6 +18,7 @@ TreeNode::~TreeNode()
 void TreeNode::draw(aie::Renderer2D* renderer, int x, int y, aie::Font* g_systemFont, bool selected)
 {
 	static char buffer[10];
+
 	sprintf(buffer, "%d", m_value);
 	renderer->setRenderColour(1, 1, 0);
 	renderer->drawCircle(x, y, 30);

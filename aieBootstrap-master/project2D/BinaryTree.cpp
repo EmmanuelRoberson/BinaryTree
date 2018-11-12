@@ -53,66 +53,71 @@ void BinaryTree::insert(int a_nValue)
 
 void BinaryTree::remove(int a_nValue)
 {
-	TreeNode* curr = nullptr;
-	TreeNode* parent = nullptr;
+	TreeNode* curr = m_pRoot;
+	TreeNode* parent = m_pRoot;
 
-	TreeNode** ppParent = &curr;
-	TreeNode** ppOut = &parent;
+	TreeNode** ppOut = &curr;
+	TreeNode** ppParent = &parent;
+	
 
-	findNode(a_nValue, ppOut, ppParent);
-
-	curr = *ppOut;
-	parent = *ppParent;
-
-
-	if (curr->hasRight())
+	if (findNode(a_nValue, ppOut, ppParent))
 	{
-		TreeNode* iterCurr = *ppOut;
-		TreeNode* iterParent = *ppParent;
-
-		//moves curr right if it has one
-		iterCurr = iterCurr->getRight();
-		iterParent = iterCurr;
-
-		//moves it all the way left, and keeps parent trailing
-		while (iterCurr->hasLeft())
+		if (curr->hasRight())
 		{
-			iterParent = iterCurr;
-			iterCurr = iterCurr->getLeft();
-		}
+			TreeNode* iterCurr = (*ppOut);
+			TreeNode* iterParent = (*ppParent);
 
-		//sets the the very left node value, to the current
-		curr->setData(iterCurr->getData());
+			// the next if and while statements are the ' go right, then B-line'
 
-		if (iterParent->getLeft() == iterCurr)
-		{
-			//sets the iterCurr's right to iterParent's left
-			iterParent->setLeft(iterCurr->getRight());
-		}
-		else if (iterParent->getRight() == iterCurr)
-		{
-			//sets the iterCurr's right to iterParent's right
-			iterParent->setRight(iterCurr->getRight());
-		}
+			//moves curr right if it has one
+			if (iterCurr->hasRight())
+			{
+				iterParent = iterCurr;
+				iterCurr = iterCurr->getRight();
+			}
 
-		delete iterCurr;
-		iterCurr = nullptr;
-	}
-	else if (curr->hasLeft())
-	{
-		if (parent->getLeft() == curr)
-		{
-			//sets the Curr's right to Parent's left
-			parent->setLeft(curr->getLeft());
-		}
-		else if (parent->getRight() == curr)
-		{
-			//sets the Curr's right to Parent's right
-			parent->setRight(curr->getLeft());
-		}
+			//moves it all the way left, and keeps parent trailing
+			//also works if it doesnt have a left problem
+			while (iterCurr->hasLeft())
+			{
+				iterParent = iterCurr;
+				iterCurr = iterCurr->getLeft();
+			}
 
-		delete curr;
-		curr = nullptr;
+			//copies value from minimum node to current node
+			curr->setData(iterCurr->getData());
+
+			if (iterParent->getLeft() == iterCurr)
+			{
+				//sets the minimum's right to minimum's parent's left
+				iterParent->setLeft(iterCurr->getRight());
+			}
+			else if (iterParent->getRight() == iterCurr)
+			{
+				//sets the minimum's right to minimum's parent's right
+				iterParent->setRight(iterCurr->getRight());
+			}
+
+			delete iterCurr;
+		}
+		else
+		{
+			//if we are deleting the parent's left child
+			if (parent->getLeft() == curr)
+			{
+				//sets curr's left to parent's left
+				parent->setLeft(curr->getLeft());
+			}
+			else if (parent->getRight() == curr)
+			{
+				//sets curr's left to parent's right
+				parent->setRight(curr->getLeft());
+			}
+			else if (m_pRoot == curr)
+				m_pRoot = curr->getLeft();
+
+			delete curr;
+		}
 	}
 }
 
@@ -126,11 +131,17 @@ TreeNode * BinaryTree::find(int a_nValue)
 		{
 			if (curr->hasLeft())
 				curr = curr->getLeft();
+			else
+				//if no value is found, then return the root
+				return m_pRoot;
 		}
 		else if (curr->getData() < a_nValue)
 		{
 			if (curr->hasRight())
 				curr = curr->getRight();
+			else
+				//if no value is found, then return the root
+				return m_pRoot;
 		}
 
 		if (curr->getData() == a_nValue)
@@ -138,6 +149,8 @@ TreeNode * BinaryTree::find(int a_nValue)
 			return curr;
 		}
 	}
+
+
 }
 
 void BinaryTree::draw(aie::Renderer2D* renderer, aie::Font* g_systemFont,TreeNode* selected)
@@ -149,28 +162,38 @@ void BinaryTree::draw(aie::Renderer2D* renderer, aie::Font* g_systemFont,TreeNod
 
 bool BinaryTree::findNode(int a_nSearchValue, TreeNode ** ppOutNode, TreeNode ** ppOutParent)
 {
-	TreeNode* curr = m_pRoot;
-	TreeNode* parent = curr;
+	//TreeNode* curr = m_pRoot;
+	//TreeNode* parent = curr;
 
-	ppOutNode = &curr;
-	ppOutParent = &parent;
+	//ppOutNode = &curr;
+	//ppOutParent = &parent;
 
-	while (curr != nullptr)
+	while (*ppOutNode != nullptr)
 	{
-		if (curr->getData() < a_nSearchValue)
+		if ((*ppOutNode)->getData() < a_nSearchValue)
 		{
-			parent = curr;
-			curr = curr->getRight();
+			//checks to see if it is a dead end
+			if ((*ppOutNode)->hasRight())
+			{
+				*ppOutParent = *ppOutNode;
+				*ppOutNode = (*ppOutNode)->getRight();
+			}
+			else
+				return false;
 		}
-		else if (curr->getData() > a_nSearchValue)
+		else if ((*ppOutNode)->getData() > a_nSearchValue)
 		{
-			parent = curr;
-			curr = curr->getLeft();
+			//checks to see if it is a dead end
+			if ((*ppOutNode)->hasLeft())
+			{
+				*ppOutParent = *ppOutNode;
+				*ppOutNode = (*ppOutNode)->getLeft();
+			}
+			else
+				return false;
 		}
-		else if (curr->getData() == a_nSearchValue)
+		else if ((*ppOutNode)->getData() == a_nSearchValue)
 		{
-			*ppOutNode = curr;
-			*ppOutParent = parent;
 			return true;
 		}
 	}
